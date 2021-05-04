@@ -1,0 +1,61 @@
+@import './variables';
+
+@mixin container {
+    overflow-y: scroll;
+    width: 100%;
+    background-color: #F6FCFF;
+}
+
+@mixin label_style {
+    font-family: 'Raleway', sans-serif;
+    margin-bottom: 4px;
+    font-size: 15px;
+    display: inline-block;
+}
+
+@mixin title_h1 {
+    font-family: $first-font;
+    font-weight: 900;
+    font-size: 30px;
+}
+
+@mixin title2_h1 {
+    font-family: $first-font;
+    margin: 2% 0 3% 0;
+    font-weight: 700;    
+}
+
+@mixin title_h4 {
+    font-family: $first-font;
+    color: $primary-color;
+    margin: 10px 0;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+@mixin blue_btn {
+    width: 140px;
+    height: 40px;
+    border-radius: 7px;
+    background: $secondary-color;
+    margin: 7px 0 10px 0;
+    color: white;
+    border: none;
+    padding: 4px 0;
+    font-family: $first-font;
+    font-weight: 700;
+}
+
+@mixin active_btn {
+    width: 140px;
+    height: 40px;
+    border-radius: 7px;
+    background: #224C84;
+    margin: 10px 0 10px 0;
+    color: white;
+    border: none;
+    padding: 4px 0;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+}
+
