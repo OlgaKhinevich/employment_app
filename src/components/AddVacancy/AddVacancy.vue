@@ -6,7 +6,7 @@
         <label>Минимальная зарплата: </label><input class="salary" v-model="min_salary" type="text" placeholder="Зарплата" /><label>  руб.</label><br>
         <label>Максимальная зарплата: </label><input class="salary" v-model="max_salary" type="text" placeholder="Зарплата" /><label>  руб.</label><br>
         <label>Профессиональная область: </label>
-        <select>
+        <select v-model="professional_field">
             <option>Любая</option>
             <option>IT, Интернет</option>
             <option>Бухгалтерия, финансы</option>
@@ -26,7 +26,7 @@
             <option>Образование</option>
         </select><br>
         <label>Занятость: </label>
-        <select>
+        <select v-model="employment_type">
             <option>Любая</option>
             <option>Полная занятость</option>
             <option>Частичная занятость</option>
@@ -34,7 +34,7 @@
             <option>Стажировка</option>
         </select><br>
         <label>График работы: </label>
-        <select>
+        <select v-model="work_schedule">
             <option>Любой</option>
             <option>Полный день</option>
             <option>Сменный график</option>

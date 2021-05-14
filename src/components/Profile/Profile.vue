@@ -6,28 +6,28 @@
           <img src="/dist/img/avatar.jpg" />
           <button @click="open_edit_page">Редактировать</button>
           <h4>Контакты</h4>
-          <p>Email адрес:</p>
-          <p>Телефон:</p>
+          <label>Email адрес:</label><p>ntrcn</p><br>
+          <label>Телефон:</label><p>ntrcn</p><br>
           <h4>Портфолио</h4>
           <h4>Достижения</h4>
         </div>
         <div class="right-column">
           <h4>Личная информация</h4>
-          <p>Фамилия:</p>
-          <p>Имя:</p>
-          <p>Отчество:</p>
-          <p>Дата рождения:</p>
+          <label>Фамилия:</label><p>ntrcn</p><br>
+          <label>Имя:</label><p>ntrcn</p><br>
+          <label>Отчество:</label><p>ntrcn</p><br>
+          <label>Дата рождения:</label><p>ntrcn</p><br>
           <h4>Основное образование</h4>
           <h4>Дополнительное образование</h4>
           <h4>Опыт работы</h4>
           <h4>Профессиональные навыки</h4>
           <h4>Личные качества</h4>
           <h4>Дополнительно</h4>
-          <p>Желаемая зарплата:</p>
-          <p>Занятость:</p>
-          <p>График работы:</p>
-          <p>Готовность к командировкам:</p>
-          <p>Готовность к переезду:</p>
+          <label>Желаемая зарплата:</label><p>ntrcn</p><br>
+          <label>Занятость:</label><p>ntrcn</p><br>
+          <label>График работы:</label><p>ntrcn</p><br>
+          <label>Готовность к командировкам:</label><p>ntrcn</p><br>
+          <label>Готовность к переезду:</label><p>ntrcn</p><br>
         </div>  
     </div>   
   </div>
@@ -47,29 +47,31 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  @import '../../styles/mixins';
+  @import '../../styles/variables';
+
   .profile {
-    overflow-y: scroll;
-    width: 100%;
-    background-color: #F6FCFF; 
-    h1 {
-        font-family: 'Montserrat', sans-serif;
-        margin: 2% 0 3% 5%;
-        font-weight: 700;    
-    }
+    @include container;
+    padding: 0 5%;
+    h1 { @include title2_h1; }
     .information {
       display: flex;
       flex-direction: row;
       padding-left: 5%;
       img { width: 80%; }
       h4 {
-        font-family: 'Montserrat', sans-serif;
-        color: #224C84;
+        font-family: $first-font;
+        color: $primary-color;
         margin: 0 0 10px 0;
         font-weight: 700;
         font-size: 16px;
       }
+      label { 
+        @include label_style;
+        width: 300px; 
+      }
       p {
-        font-family: 'Raleway', sans-serif;
+        font-family: $second-font;
         margin-bottom: 4px;
       }
       button {
@@ -81,7 +83,7 @@ export default {
         color: white;
         border: none;
         padding: 4px 0;
-        font-family: 'Montserrat', sans-serif;
+        font-family: $first-font;
         font-weight: 700;
       }
     } 

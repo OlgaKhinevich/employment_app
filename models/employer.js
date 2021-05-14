@@ -11,6 +11,6 @@ const employer = Schema({
     company_direction: {type: String, required: true},
     company_description: {type: String, required: true},
     website: {type: String}
-});
+}, {versionKey: false});
 
 module.exports = mongoose.model("employer", employer);

@@ -1,7 +1,6 @@
 <template>
     <div v-if="show" class="modal-shadow" @click.self="closeModal">
         <div class="modal">
-            <div class="modal-close" @click="closeModal">&#10006;</div>
             <slot name="title">
                 <h2 class="modal-title">
                     <slot name="modal_title">  </slot>    
@@ -29,9 +28,10 @@
 <script>
     export default {
         name: "ModalWindow",
+        // props: ["is_visible"],
         data: function () {
             return {
-                show: false
+                show: true
             }
         },
         methods: {
@@ -91,6 +91,8 @@
         }
  
         &-footer {
+            display: flex;
+            justify-content: center;
             &__button {
                 background-color: #0971c7;
                 color: #fff;
@@ -101,6 +103,7 @@
                 font-weight: 500;
                 border-radius: 8px;
                 min-width: 150px;
+                cursor: pointer;
             }
         }
     }

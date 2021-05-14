@@ -12,24 +12,24 @@
             <h1 v-if="['signup_main', 'signup_edu', 'signup_company'].includes(auth_mode)">Регистрация</h1>
 
             <template v-if="auth_mode=='signin'">
-                <select v-model="signin.signin_mode">
+                <select v-model="signin.signin_mode" class="user">
                     <option disabled value="">Режим входа</option>
                     <option value="employer">Работодатель</option>
                     <option value="student">Студент</option>
                     <option value="admin">Администратор</option>
                 </select>
-                <input  v-model="signin.email" type="text" placeholder="Email адрес" />
-                <input  v-model="signin.password" type="password" placeholder="Пароль" />
+                <input  v-model="signin.email" type="text" placeholder="Email адрес" class="user" />
+                <input  v-model="signin.password" type="password" placeholder="Пароль" class="password" />
                 <button @click="signin_click">Вход</button> 
             </template>
 
             <template v-if="auth_mode=='signup_main'">
-                <input v-model="signup.surname" type="text" placeholder="Фамилия" />
-                <input v-model="signup.name" type="text" placeholder="Имя" />
-                <input v-model="signup.patronymic" type="text" placeholder="Отчество" />
-                <input v-model="signup.email" type="text" placeholder="Email адрес" />
-                <input v-model="signup.password" type="password" placeholder="Пароль" />
-                <input v-model="signup.repeat_password" type="password" placeholder="Повторите пароль" />
+                <input v-model="signup.surname" type="text" placeholder="Фамилия" class="user" />
+                <input v-model="signup.name" type="text" placeholder="Имя" class="user" />
+                <input v-model="signup.patronymic" type="text" placeholder="Отчество" class="user" />
+                <input v-model="signup.email" type="text" placeholder="Email адрес" class="contact" />
+                <input v-model="signup.password" type="password" placeholder="Пароль" class="password" />
+                <input v-model="signup.repeat_password" type="password" placeholder="Повторите пароль" class="password" />
                 <div class="showMore" @click="switch_mode" data-mode="signup_edu">Далее >></div>
             </template>
 
@@ -41,7 +41,7 @@
             </div>
 
             <template v-if="auth_mode=='signup_edu'">
-                <select v-model="signup.faculty">
+                <select v-model="signup.faculty" class="edu">
                     <option disabled value="">Факультет</option>
                     <option>ФГУиМО</option>
                     <option>ЕНФ</option>
@@ -52,18 +52,18 @@
                     <option>ФЭиМ</option>
                     <option>ЮФ</option>
                 </select>
-                <input  v-model="signup.profession" type="text" placeholder="Направление подготовки" />
-                <input  v-model="signup.gradebook_number" type="text" placeholder="Номер зачетной книжки" />  
+                <input  v-model="signup.profession" type="text" placeholder="Направление подготовки" class="edu" />
+                <input  v-model="signup.gradebook_number" type="text" placeholder="Номер зачетной книжки" class="edu" />  
             </template>
             
             <template v-if="auth_mode=='signup_company'">
-                <input  v-model="signup.company_name" type="text" placeholder="Название компании" />
-                <select v-model="signup.company_direction">
+                <input  v-model="signup.company_name" type="text" placeholder="Название компании" class="company" />
+                <select v-model="signup.company_direction" class="company">
                     <option disabled value="">Сфера деятельности</option>
                     <option>Энергетика</option>
                 </select>
-                <textarea v-model="signup.company_description" placeholder="Описание компании"></textarea>
-                <input  v-model="signup.company_url" type="text" placeholder="Веб-сайт" />
+                <textarea v-model="signup.company_description" placeholder="Описание компании" class="company"></textarea>
+                <input  v-model="signup.company_url" type="text" placeholder="Веб-сайт" class="web" />
             </template>
 
             <template v-if="['signup_edu', 'signup_company'].includes(auth_mode)">
@@ -78,50 +78,50 @@
             <button @click="switch_mode" data-mode="signin">Вход</button>
         </div>
         
-        <Modal>
-            <template name="modal_content">
-                Ваша заявка отправлена на рассмотрение администратору. 
-                Рассмотрение заявки может заняь несколько дней. 
-                Вам придет письмо на email-адрес с ответом.
+        <modal-window v-if="is_auth_modal_visible">
+            <template v-slot:modal_content>
+                {{auth_modal_text}}
             </template>
-        </Modal>
+        </modal-window>
     </div>
 </template>
 
 <script>
     import AlertError from '../../../lib/alert_error';
-    import Modal from '../Modal/ModalWindow.vue';
+    import ModalWindow from '../Modal/ModalWindow.vue';
     import json_fetch from '../../lib/json_fetch';
 
     export default {
         data() {
             return {
+                is_auth_modal_visible: false,
+                auth_modal_text: "",
                 auth_mode: "signin",
                 signin: {
                     signin_mode: "",
-                    email: "",
-                    password: ""
+                    email: "ivan@list.ru",
+                    password: "12345678"
                 },
                 signup: {
                     surname: "Иванов",
                     name: "Иван",
                     patronymic: "Иванович",
-                    email: "ivanov@list.ru",
+                    email: "ivan@list.ru",
                     password: "12345678",
                     repeat_password: "12345678",
                     faculty: "ФФиПИ",
                     profession: "Экономика",
                     gradebook_number: "17-06-0000",
-                    company_name: "",
-                    company_description: "",
-                    company_url: "",
-                    company_direction: ""
+                    company_name: "Компания",
+                    company_description: "описание",
+                    company_url: "www.company.ru",
+                    company_direction: "Энергетика"
                 },
                 
             }
         },
         components: {
-            Modal
+           "modal-window" : ModalWindow
         },
         mounted() {
             this.$store.commit("setVisibility", false);
@@ -132,49 +132,33 @@
             },
             async signin_click() {
                 try {
-                    if(this.signin.signin_mode === "employer") await this.signin_employer();
-                    else if (this.signin.signin_mode === "student") await this.signup_student();  
-                } catch(err) {
-                    console.log(err);
-                }
-            },
-            async signin_employer() {
-                try {
                     if(!this.signin.email || !this.signin.password) throw new Error("Empty field!");
-                    const response = await fetch('http://localhost:3000/signin', {
+                    const response = await json_fetch('http://localhost:3000/signin', {
                         email: this.signin.email,
-                        password: this.signin.password
+                        password: this.signin.password,
+                        mode: this.signin.signin_mode
                     })
-                    if(!response.ok) throw new Error(response.statusText);
+                   console.log(response);
                     this.$router.push("/profile");
+                    if(!response.ok) throw new Error(response.statusText);
                 } catch(err) {
                     console.log(err);
                 }
             },
-            async signin_student() {
-                try {
-                    if(!this.signin.email || !this.signin.password) throw new Error("Empty field!");
-                    const response = await fetch('http://localhost:3000/signin', {
-                        email: this.signin.email,
-                        password: this.signin.password
-                    })
-                    if(!response.ok) throw new Error(response.statusText);
-                    this.$router.push("/profile");
-                } catch(err) {
-                    console.log(err);
-                }
-            },
+
             async signup_click() {
                 try {
                     if(this.auth_mode === "signup_edu") await this.signup_student();
                     else await this.signup_employer();
-                    alert("Успешная регистрация!");   
+
                 } catch(err) {
                     if(err.name === "AlertError") alert(err.message);
                     console.log(err);
                 }
             },
+            
             async signup_student() {
+                try {
                 const {surname, name, patronymic, email, password, repeat_password, faculty, profession,
                 gradebook_number} = this.signup;
                 if(!surname || !name || !patronymic || !email || !password || !faculty ||
@@ -183,23 +167,40 @@
                 if(password !== repeat_password) throw new AlertError("Пароли не совпадают!");
                 if(!email.includes("@")) throw new AlertError ("Неправильный формат email!");
                 const response = await json_fetch('http://localhost:3000/signup', {
-                    signup_type: "student", surname, name, patronymic, email, password, faculty, profession, gradebook_number           
+                    signup_type: "student", surname, name, patronymic, email, password, faculty, profession, gradebook_number     
                 });
-                if(!response.ok) throw new AlertError(response.statusText);  
+                if(!response.ok) throw new AlertError(response.statusText); 
+                this.auth_modal_text = `Ваша заявка отправлена на рассмотрение администратору. 
+                                        Рассмотрение заявки может заняь несколько дней. 
+                                        Вам придет письмо на email-адрес с ответом.`;
+                this.is_auth_modal_visible = true;
+                }
+                catch(err){
+                    if(err.name === "AlertError") alert(err.message);
+                    console.log(err);
+                } 
             },
             async signup_employer() {
-                const {surname, name, patronymic, email, password, repeat_password, company_name, company_direction,
-                company_description, company_url} = this.signup;
-                if(!surname || !name || !patronymic || !email || !password || !company_name || 
-                !company_direction || !company_description || !company_url) throw new AlertError("Пожалуйста, заполните все поля!"); 
-                if(password.length < 6 && password.length > 20) throw new AlertError("Длина пароля должна быть больше 6 символов, но меньше 20!");
-                if(password !== repeat_password) throw new AlertError("Пароли не совпадают!");
-                if(!email.includes("@")) throw new AlertError("Неправильный формат email!");
-                const response = await fetch('http://localhost:3000/signup', {
-                    signup_type: "employer", surname, name, patronymic, email, password, company_name, 
-                    company_direction, company_description, company_url            
-                })
-                if(!response.ok) throw new AlertError(response.statusText);  
+                try{
+                    const {surname, name, patronymic, email, password, repeat_password, company_name, company_direction,
+                    company_description, company_url} = this.signup;
+                    if(!surname || !name || !patronymic || !email || !password || !company_name || 
+                    !company_direction || !company_description || !company_url) throw new AlertError("Пожалуйста, заполните все поля!"); 
+                    if(password.length < 6 || password.length > 20) throw new AlertError("Длина пароля должна быть больше 6 символов, но меньше 20!");
+                    if(password !== repeat_password) throw new AlertError("Пароли не совпадают!");
+                    if(!email.includes("@")) throw new AlertError("Неправильный формат email!");
+                    const response = await json_fetch('http://localhost:3000/signup', {
+                        signup_type: "employer", surname, name, patronymic, email, password, company_name, 
+                        company_direction, company_description, company_url            
+                    });
+                    if(!response.ok) throw new AlertError(response.statusText);  
+                    this.auth_modal_text = `Регистрация прошла успешно!`;
+                    this.is_auth_modal_visible = true;
+                }
+                catch(err){
+                    if(err.name === "AlertError") alert(err.message);
+                    console.log(err);
+                }
             }
         }
     }
@@ -251,10 +252,8 @@
                 margin-bottom: 9px;
                 padding: 5px 5px 5px 40px;
                 width: 350px;
-                height: 50px; 
-                background: url(/dist/img/person-icon.svg) no-repeat;
-                background-size: 30px auto;
-                background-position: 5px center;
+                height: 50px;
+                font-family: $second-font; 
             }
             input, select {
                 height: 44px;
@@ -264,7 +263,6 @@
                 background-color: #FFFFFF;
                 font-size: 14px;
                 outline: none;
-                background: url(/dist/img/person-icon.svg) no-repeat;
                 background-size: 30px auto;
                 background-position: 5px center;
                     &::placeholder { 
@@ -272,6 +270,36 @@
                         transform: translateY(-13px); 
                     }
                 }
+            }
+            .user { 
+                background: url(/dist/img/person-icon.svg) no-repeat; 
+                background-size: 30px auto;
+                background-position: 5px center;
+            }
+            .password {
+                background: url(/dist/img/password-icon.svg) no-repeat; 
+                background-size: 30px auto;
+                background-position: 5px center;
+            }
+            .contact {
+                background: url(/dist/img/contact-icon.svg) no-repeat; 
+                background-size: 30px auto;
+                background-position: 5px center;
+            }
+            .web {
+                background: url(/dist/img/web-icon.svg) no-repeat; 
+                background-size: 30px auto;
+                background-position: 5px center;
+            }
+            .edu {
+                background: url(/dist/img/edu-icon.svg) no-repeat; 
+                background-size: 30px auto;
+                background-position: 5px center;
+            }
+            .company {
+                background: url(/dist/img/edu-icon.svg) no-repeat; 
+                background-size: 30px auto;
+                background-position: 5px center;
             }
             select {
                 color: black; 

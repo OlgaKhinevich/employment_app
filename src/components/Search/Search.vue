@@ -9,39 +9,65 @@
       <div class="filter-content">
         <div class="left-column">
           <label>Профессиональная область </label>  
-          <select>
-            <option>Пункт 1</option>
-            <option>Пункт 2</option>
+          <select v-model="professional_field">
+            <option>Любая</option>
+            <option>IT, Интернет</option>
+            <option>Бухгалтерия, финансы</option>
+            <option>Реклама, маркетинг</option>
+            <option>Административный персонал</option>
+            <option>Банки, инвестиции</option>
+            <option>Управление персоналом</option>
+            <option>Автобизнес</option>
+            <option>Безопасность</option>
+            <option>Производство</option>
+            <option>Искусство, развлечения</option>
+            <option>Торговля</option>
+            <option>Общепит</option>
+            <option>Строительство, недвижимость</option>
+            <option>Юриспруденция</option>
+            <option>Гос.служба</option>
+            <option>Образование</option>
           </select><br>
           <label>Город </label>  
-          <select>
-            <option>Пункт 1</option>
-            <option>Пункт 2</option>
+          <select v-model="city">
+            <option>Любой</option>
+            <option>Белгород</option>
+            <option>Воронеж</option>
+            <option>Железногорск</option>
+            <option>Курск</option>
+            <option>Курчатов</option>
+            <option>Орел</option>
+            <option>Москва</option>
           </select><br>
             <label>График работы </label>
-            <select>
-              <option>Пункт 1</option>
-              <option>Пункт 2</option>
+            <select v-model="work_schedule">
+              <option>Любой</option>
+              <option>Полный день</option>
+              <option>Сменный график</option>
+              <option>Гибкий график</option>
+              <option>Удаленная работа</option>
+              <option>Вахтовый метод</option>
             </select><br>
-            <label>Навыки </label><br>
-            <textarea v-model="company_description" placeholder="Описание личных качеств"></textarea>
+            <label>Должность </label><input v-model="position" type="text" /><br>
         </div>
         <div class="right-column">
             <label>Тип занятости </label>
-            <select>
-              <option>Пункт 1</option>
-              <option>Пункт 2</option>
+            <select v-model="employment_type">
+              <option>Любой</option>
+              <option>Полная занятость</option>
+              <option>Частичная занятость</option>
+              <option>Проектная работа/разовое задание</option>
+              <option>Стажировка</option>
             </select><br>
-            <label>График работы </label>
-            <select>
-              <option>Пункт 1</option>
-              <option>Пункт 2</option>
-            </select><br>
-            <label>Зарплата (руб.) </label><br>
-            <input v-model="company_name" type="range" min="0" max="100000" step="1000"/>
+            <div>
+              <label>Минимальная зарплата (руб.) </label>
+              <input v-model="min_salary" type="text" /><br>
+              <label>Максимальная зарплата (руб.) </label>
+              <input v-model="max_salary" type="text" /><br>
+            </div>
             <div class="buttons">
-              <button class="search-btn">Найти</button>
-              <button class="clear-btn">Очистить</button>
+              <button class="search-btn" @click="search_vacancy">Найти</button>
+              <button class="clear-btn" @click="clear_filters">Очистить</button>
             </div>
         </div>
       </div>
@@ -55,8 +81,30 @@
 <script>
 import SearchResult from './SearchResult.vue';
 export default {
+  data() {
+    return {
+        position: "",
+        min_salary: 0,
+        max_salary: 0,
+        professional_field: "",
+        employment_type: "",
+        work_schedule: "",
+        city: "",
+        professional_skills: "",
+    }       
+  },
   components: {
     SearchResult
+  },
+  methods: {
+    search_vacancy() {
+      const {position, min_salary, max_salary, professional_field, employment_type, work_schedule, city} = this;
+      const response = await fetch('http://localhost:3000/search', {
+        position, min_salary, max_salary, professional_field, employment_type, work_schedule, 
+        city        
+      }) 
+      if(!response.ok) throw new AlertError(response.statusText);  
+    },
   }
 }
 </script>
