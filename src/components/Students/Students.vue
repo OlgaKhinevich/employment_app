@@ -11,33 +11,87 @@
             <th>Направление подготовки</th>
             <th>Номер зачетной книжки</th>
             <th>Статус</th>
+            <th></th>
           </tr>
-          <tr>
-            <td>Иванов</td>
-            <td>Иван</td>
-            <td>Иванович</td>
-            <td>Факультет фундаментальной и прикладной информатики</td>
-            <td>Информационные системы и технологии</td>
-            <td>17-06-0000</td>
-            <td><div class="status">Одобрен</div></td>
-          </tr>
-          <tr>
-            <td>Иванов</td>
-            <td>Иван</td>
-            <td>Иванович</td>
-            <td>Факультет фундаментальной и прикладной информатики</td>
-            <td>Информационные системы и технологии</td>
-            <td>17-06-0000</td>
-            <td><div class="status">Нерассмотрен</div></td>
-          </tr>          
+          <tr v-for="(item, index) in students" :key="index" :data-index="index">
+            <td>{{item.surname}}</td>
+            <td>{{item.name}}</td>
+            <td>{{item.patronymic}}</td>
+            <td>{{item.basic_edu.higher_edu[0].faculty}}</td>
+            <td>{{item.basic_edu.higher_edu[0].profession}}</td>
+            <td>{{item.basic_edu.higher_edu[0].gradebook_number}}</td>
+            <td><div class="status">{{item.status}}</div></td>
+            <td v-if="item.status == 'нерассмотрен'">
+              <i class="fa fa-check" @click="accept_student"></i>
+              <i class="fa fa-ban" @click="open_ban_modal"> </i>
+            </td> 
+          </tr>         
         </table>
       </div>
+
+      <ban-modal :email="email" :student_id="student_id" v-if="is_ban_modal_visible"  ></ban-modal>
   </div>
 </template>
 
 <script>
-export default {
+import AlertError from '../../../lib/alert_error';
+import json_fetch from '../../lib/json_fetch';
+import BanModal from './BanModal.vue';
 
+export default {
+  data() {
+    return {
+      is_ban_modal_visible: false,
+      ban_modal_text: "",
+      students: [],
+      email: '',
+      student_id: ''
+    }       
+  },
+  components: {
+    "ban-modal": BanModal
+  },
+  mounted() {
+    this.get_all_students();
+  },
+  methods: {
+    async get_all_students() {
+      try {
+        const response = await json_fetch(`http://localhost:3000/students`);
+        if(!response.ok) throw new AlertError(response.statusText);
+        const data = await response.json();
+        this.students = data;
+      } catch (err) {
+        if(err.name === "AlertError") return alert(err.message);
+        console.log(err);
+      }
+    },
+    async accept_student(e) {
+      try {
+        const row = e.target.closest('tr');
+        const index = row.dataset.index;
+        const email = this.students[index].email;
+        const student_id = this.students[index]._id;
+        const response = await json_fetch('http://localhost:3000/acceptstudent', {
+          status: "одобрен", _id: student_id, email     
+        }) 
+        if(response.ok) alert("Уведомление отправлено на почту");
+        if(!response.ok) throw new AlertError(response.statusText);
+      } catch (err) {
+        if(err.name === "AlertError") return alert(err.message);
+        console.log(err);
+      }
+    },
+    open_ban_modal(e) {
+        const row = e.target.closest('tr');
+        const index = row.dataset.index;
+        this.email = this.students[index].email;
+        this.student_id = this.students[index]._id;
+        this.is_ban_modal_visible = true;
+        console.log(this.student_id, this.email);
+    }
+  } 
+    
 }
 </script>
 
@@ -81,6 +135,7 @@ export default {
           color: #ffffff;
           font-weight: 600;
         }
+        i { color: #224C84; }
       }
     }
   }

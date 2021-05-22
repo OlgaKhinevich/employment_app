@@ -1,12 +1,24 @@
 <template>
   <div class="menu">
       <ul :class="active_item">
-          <img class="menu-logo" src="/dist/img/logo2.svg"/>
-          <li class="profile" @click="make_active('profile')">Личный профиль</li>
-          <li class="applications" @click="make_active('applications')">Заявки</li>
-          <li class="search" @click="make_active('search')">Поиск</li>
-          <li class="notifications" @click="make_active('notifications')">Уведомления</li>
-          <li class="news" @click="make_active('news')">Новости</li>
+        <img class="menu-logo" src="/dist/img/logo2.svg"/>
+            <template v-if="user_role == 'student'">  
+                <li class="profile" @click="make_active('profile')">Личный профиль</li>
+                <li class="applications" @click="make_active('applications')">Заявки</li>
+                <li class="search" @click="make_active('search')">Поиск</li>
+                <li class="notifications" @click="make_active('notifications')">Уведомления</li>
+            </template>
+        
+            <template v-if="user_role == 'admin'"> 
+                <li class="students" @click="make_active('students')">Студенты</li>
+                <li class="vacancies" @click="make_active('vacancies')">Вакансии</li>
+                <li class="statistics" @click="make_active('statistics')">Статистика</li>
+            </template>
+
+            <template v-if="user_role == 'employer'">
+                <li class="employer_vacancies" @click="make_active('employer_vacancies')">Мои вакансии</li>
+                <li class="employer_applications" @click="make_active('employer_applications')">Заявки</li>      
+            </template>
       </ul>
   </div>
 </template>
@@ -16,6 +28,11 @@ export default {
     data() {
         return {
             active_item: 'profile'
+        }
+    },
+    computed:{
+        user_role(){
+            return this.$store.state.role;
         }
     },
     methods: {
@@ -49,7 +66,9 @@ export default {
                 }*/ 
             }
             &.profile li.profile, &.applications li.applications,
-            &.search li.search, &.notifications li.notifications, &.news li.news {
+            &.search li.search, &.notifications li.notifications, &.students li.students,
+            &.statistics li.statistics, &.vacancies li.vacancies, &.employer_vacancies li.employer_vacancies,
+            &.employer_applications li.employer_applications {
                 background-color: #0C3B7A;
             }
         }  

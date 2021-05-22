@@ -10,7 +10,8 @@ const employer = Schema({
     company_name: {type: String, required: true},
     company_direction: {type: String, required: true},
     company_description: {type: String, required: true},
-    website: {type: String}
+    website: {type: String},
+    role: {type: String, default: "employer"} 
 }, {versionKey: false});
 
 module.exports = mongoose.model("employer", employer);

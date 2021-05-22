@@ -3,12 +3,12 @@
     <h1>Личный профиль</h1>
     <div class="information">
         <div class="left-column">
+          <img src="/dist/img/1.jpg">
           <Avatar />
-
           <h4>Контакты</h4>
-          <label>Email адрес: </label><input v-model="email" type="text" placeholder="Email адрес" /><br>
-          <label>Телефон: </label><input type="tel" v-model="telephone_number" placeholder="Телефон"/><br>
-          <label>Смена пароля: </label><input type="password" v-model="password" placeholder="Пароль"/><br>
+          <label>Email адрес </label><input v-model="email" type="text" placeholder="Email адрес" /><br>
+          <label>Телефон </label><input type="tel" v-model="telephone_number" placeholder="Телефон"/><br>
+          <label>Смена пароля </label><input type="password" v-model="password" placeholder="Пароль"/><br>
           
           <h4>Портфолио</h4>
           <p>Название ссылки</p>
@@ -41,10 +41,10 @@
         <div class="right-column">
           <h4>Личная информация</h4>
           <div class="personal-information">
-              <label>Фамилия: </label><input v-model="surname" type="text" placeholder="Фамилия" /><br>
-              <label>Имя: </label><input v-model="name" type="text" placeholder="Имя" /><br>
-              <label>Отчество: </label><input v-model="patronymic" type="text" placeholder="Отчество" /><br>
-              <label>Дата рождения: </label><input type="date" v-model="birth_date" /><br>
+              <label>Фамилия </label><input v-model="surname" type="text" placeholder="Фамилия" /><br>
+              <label>Имя </label><input v-model="name" type="text" placeholder="Имя" /><br>
+              <label>Отчество </label><input v-model="patronymic" type="text" placeholder="Отчество" /><br>
+              <label>Дата рождения </label><input type="date" v-model="birth_date" /><br>
           </div>
 
           <h4>Основное образование</h4>
@@ -111,11 +111,11 @@
             <input v-model="basic_edu.higher_edu.edu_institute" type="text" placeholder="Название" /><br>
             <label class="date-label">Год окончания</label>
             <select v-model="basic_edu.higher_edu.grad_year">
-              <option>2016</option>
               <option>2017</option>
               <option>2018</option>
               <option>2019</option>
               <option>2020</option>
+              <option>2021</option>
             </select><br> 
             <label>Факультет </label><input v-model="basic_edu.higher_edu.faculty" type="text" placeholder="Факультет" /><br>
             <label>Направление подготовки </label><input v-model="basic_edu.higher_edu.profession" type="text" placeholder="Направление пдготовки" /><br> 
@@ -207,18 +207,43 @@
               </p>    
           </div>
 
-          <h4>Профеcсиональные навыки <button @click="show_modal">Добавить</button></h4>
-          <!-- <modal-window ref="modal"></modal-window> -->
+          <h4>Профеcсиональные навыки</h4>
+          <div class="professional-skills">
+            <label>Тип навыка</label>
+            <select v-model="professional_skills.skill_type">
+              <option>Навыки работы в программе</option>
+              <option>Знание языков программирования</option>
+              <option>Знание иностранных языков</option>
+              <option>Навыки работы с оргтехникой</option>
+            </select><br>
+            <label>Название навыка</label>
+            <input v-model="professional_skills.skill_name" type="text" placeholder="Название навыка" /><br>
+            <label>Уровень владения</label>
+            <select v-model="professional_skills.skill_level">
+              <option>Начальный уровень</option>
+              <option>Средний уровень</option>
+              <option>Высокий уровень</option>
+            </select><br>
+            <button @click="add_professional_skill">Добавить</button> 
+          </div>
+          <div class="professional-skills-list">
+              <p v-for="(item, index) in professional_skills" :key="index" :data-index="index">
+                <span>{{item.skill_type}}</span>
+                <span>{{item.skill_name}}</span>
+                <span>{{item.skill_level}}</span>
+                <i class="fa fa-trash set_remove_btn" @click="delete_professional_skill"> </i> 
+              </p>    
+          </div>
           
           <h4>Личные качества</h4>
           <textarea v-model="personal_qualities" placeholder="Описание личных качеств"></textarea>
           
           <h4>Дополнительно</h4>
           <div class="optionally">
-            <label>Желаемая зарплата: </label>
+            <label>Желаемая зарплата </label>
             <input v-model="additionally.desired_salary" type="text" placeholder="Желаемая зарплата" />
             <label> руб.</label><br>
-            <label>Занятость: </label>
+            <label>Занятость </label>
             <select v-model="additionally.employment">
               <option>Любая</option>
               <option>Полная занятость</option>
@@ -226,7 +251,7 @@
               <option>проектная работа/разовое задание</option>
               <option>Стажировка</option>
             </select><br>
-            <label>График работы: </label>
+            <label>График работы </label>
             <select v-model="additionally.work_schedule">
               <option>Любой</option>
               <option>Полный день</option>
@@ -235,12 +260,12 @@
               <option>Удаленная работа</option>
               <option>Вахтовый метод</option>
             </select><br>
-            <label>Готовность к командировкам: </label>
+            <label>Готовность к командировкам </label>
             <select v-model="additionally.business_trips">
               <option>Да</option>
               <option>Нет</option>
             </select><br>
-            <label>Готовность к переезду: </label>
+            <label>Готовность к переезду </label>
             <select v-model="additionally.relocation">
               <option>Да</option>
               <option>Нет</option>
@@ -283,6 +308,7 @@ export default {
       },
       additional_edu: [],
       work_experience: [],
+      professional_skills: [],
       personal_qualities: '',
       additionally: {
         desired_salary: 0,
@@ -380,6 +406,22 @@ export default {
       this.basic_edu.higher_edu.faculty = '';
       this.basic_edu.higher_edu.profession = '';
     },
+    add_professional_skill() {
+      this.professional_skills.push({
+        skill_type: this.professional_skills.skill_type, 
+        skill_name: this.professional_skills.skill_name,
+        skill_level: this.professional_skills.skill_level
+      });
+      this.professional_skills.skill_type = '';
+      this.professional_skills.skill_name = '';
+      this.professional_skills.skill_level = '';
+    },
+    delete_professional_skill({target}) {
+      const is_confirmed = confirm("Вы действительно хотите удалить?");
+      if(!is_confirmed) return;
+      const delete_index = target.closest("p").dataset.index;
+      this.professional_skills.splice(delete_index, 1);
+    },
     delete_higher_edu_item({target}) {
       const is_confirmed = confirm("Вы действительно хотите удалить?");
       if(!is_confirmed) return;
@@ -448,7 +490,7 @@ export default {
         font-family: 'Raleway', sans-serif;
         margin: 0 0 10px 0;
       }
-
+      img {width: 90%;}
       .portfolio-files, .achievements-files {
         p {
           margin-bottom: 7px;
@@ -459,6 +501,7 @@ export default {
       }
       label {
         @include label_style;
+        margin-right: 5px;
       }
       i {color: #224C84;}
       textarea, input, select {   
@@ -479,6 +522,7 @@ export default {
         width: 170px;
         height: 30px;
         margin-bottom: 10px;
+        font-family: $second-font;
         background-color: #ffffff; 
       }
       select {
@@ -509,9 +553,9 @@ export default {
             width: 12px;
             margin-right: 10px;
           }
-          .education, .additional-edu {
+          .education, .additional-edu, .professional-skills {
             select { 
-              width: 90px;
+              width: 150px;
               background-color: #ffffff;  
             }
             input { 
@@ -538,6 +582,11 @@ export default {
             }
             
           }
+          .professional-skills {
+             label {
+              width: 140px;
+            }
+          }
           .additional-edu {
             label {
               width: 110px;
@@ -552,7 +601,7 @@ export default {
                 width: 210px;
               }
           }
-          .additional-edu-list, .higher-edu-list, .secondary-edu-list, work-experience-list, .postfolio-list, .achievements-files {
+          .additional-edu-list, .higher-edu-list, .secondary-edu-list, work-experience-list, .postfolio-list, .achievements-files, .professional-skills-list {
             font-family: $first-font;
             font-weight: 500;
           }

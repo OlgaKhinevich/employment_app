@@ -18,18 +18,41 @@ class R_User {
     }
 
     static async signin(req, res){
-        const data = User.signin(req.body);
+        const data = await User.signin(req.body);
         const token = Security.generate_token(data);
-        res.cookie("token", token, {expires: new Date(Date.now() + 84600 * 1000 )}); 
+        res.cookie("token", token, {expires: new Date(Date.now() + 84600 * 1000 )});
         res.send(data); 
     }
 
     static async edit_profile(req, res){
-        console.log(req.body);   
-        const {email}  =  Security.jwtTokenCheck(req.cookies.token);
-        req.body["email"] = email;
-        const data = await User.edit_profile(req.body);
-        res.send();
+        const data = Security.jwtTokenCheck(req.cookies.token);
+        console.log(data);
+        req.body["_id"] = data._id;
+        console.log(data);
+        await User.edit_profile(req.body);
+        res.end();
+    }
+
+    static async get_all_students(req, res){   
+        const data = await User.get_all_students();
+        res.send(data);
+    }
+
+    static async accept_student(req, res){
+        const data = User.accept_student(req.body);    
+        res.send(data); 
+    }
+
+    static async ban_student(req, res){
+        User.ban_student(req.body); 
+        res.send(); 
+    }
+
+    static async get_student(req, res) {
+        const {_id} = Security.jwtTokenCheck(req.cookies.token);
+        req.body["_id"] = _id;
+        const data = await User.get_student(req.body); 
+        res.send(data);
     }
 }
 

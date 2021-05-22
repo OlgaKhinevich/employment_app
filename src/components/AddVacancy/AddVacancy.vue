@@ -42,8 +42,8 @@
             <option>Удаленная работа</option>
             <option>Вахтовый метод</option>
         </select><br>
-        <label>Город: </label><input v-model="position" type="text" placeholder="Город" /><br>
-        <label>Адрес: </label><input v-model="position" type="text" placeholder="Адрес" /><br>
+        <label>Город: </label><input v-model="city" type="text" placeholder="Город" /><br>
+        <label>Адрес: </label><input v-model="address" type="text" placeholder="Адрес" /><br>
         <label>Условия работы:</label><br>
         <textarea v-model="working_conditions" placeholder="Описание условий работы"></textarea><br>
         <h4>Требования к соискателю</h4>
@@ -64,33 +64,37 @@
 
 <script>
     import AlertError from '../../../lib/alert_error';
+    import json_fetch from '../../lib/json_fetch';
+
     export default {
         data() {
             return {
-                position: "",
-                min_salary: 0,
-                max_salary: 0,
+                position: "Frontend Developer",
+                min_salary: 30000,
+                max_salary: 40000,
                 professional_field: "",
                 employment_type: "",
                 work_schedule: "",
-                city: "",
-                address: "",
+                city: "Курск",
+                address: "ул. Ленина, д.100",
                 duties: "",
                 professional_skills: "",
                 personal_qualities: "",
                 working_conditions: "",
                 additionally: "",
-                phone_number: "",
-                email: ""
+                phone_number: "7",
+                email: "novatest@mail.ru"
             }       
         },
         methods: {
             async add_vacancy() {
-                const {position, professional_field, employment_type, work_schedule, } = this;
+                const { position, min_salary, max_salary, professional_field, employment_type, work_schedule,
+                        city, address, duties, professional_skills, personal_qualities, working_conditions,
+                        additionally, phone_number, email  } = this;
                     if(!position || !professional_field || !employment_type ||
                     !work_schedule || !duties || !professional_skills || 
                     !personal_qualities || !working_conditions) throw new Error("Пожалуйста, заполните все поля!"); 
-                    const response = await fetch('http://localhost:3000/addvacancy', {
+                    const response = await json_fetch('http://localhost:3000/addvacancy', {
                         position, min_salary, max_salary, professional_field, employment_type, work_schedule,
                         city, address, duties, professional_skills, personal_qualities, working_conditions,
                         additionally, phone_number, email          
@@ -116,8 +120,8 @@
         }
         textarea, input, select {   
             outline: none;
-            background-color: #F1F2F2;
             border: 1px solid #425359;
+            font-family: 'Raleway', sans-serif;
             border-radius: 5px;
             padding-left: 7px;
             &:focus {
@@ -143,6 +147,7 @@
             font-size: 14px;
             font-family: 'Raleway', sans-serif;
             transition: 0.5s;
+            background-color: #FFFFFF;
         }
         textarea::-webkit-input-placeholder, input::-webkit-input-placeholder {
             color: black; 

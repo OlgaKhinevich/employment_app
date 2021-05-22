@@ -43,13 +43,12 @@ export default {
 
     .Image-input__image-wrapper {
         flex-basis: 80%;
-        width: 100%; 
+        width: 80%; 
         flex: 2.5;
         border-radius: 1px;
         margin-right: 10px;
         overflow-y: hidden;
         border-radius: 1px;
-        justify-content: center;
         align-items: center;
         display: flex;
     }
@@ -61,7 +60,7 @@ export default {
     }
 
     .Image-input__image {
-        max-width: 100%;
+        max-width: 90%;
         border-radius: 1px;
     }
 

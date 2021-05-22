@@ -60,7 +60,7 @@
                 <input  v-model="signup.company_name" type="text" placeholder="Название компании" class="company" />
                 <select v-model="signup.company_direction" class="company">
                     <option disabled value="">Сфера деятельности</option>
-                    <option>Энергетика</option>
+                    <option>Информационные технологии</option>
                 </select>
                 <textarea v-model="signup.company_description" placeholder="Описание компании" class="company"></textarea>
                 <input  v-model="signup.company_url" type="text" placeholder="Веб-сайт" class="web" />
@@ -99,23 +99,23 @@
                 auth_mode: "signin",
                 signin: {
                     signin_mode: "",
-                    email: "ivan@list.ru",
+                    email: "olya-khinevich@yandex.ru",
                     password: "12345678"
                 },
                 signup: {
                     surname: "Иванов",
                     name: "Иван",
                     patronymic: "Иванович",
-                    email: "ivan@list.ru",
+                    email: "ivanov@gmail.com",
                     password: "12345678",
                     repeat_password: "12345678",
                     faculty: "ФФиПИ",
-                    profession: "Экономика",
+                    profession: "Информационные системы и технологии",
                     gradebook_number: "17-06-0000",
-                    company_name: "Компания",
-                    company_description: "описание",
-                    company_url: "www.company.ru",
-                    company_direction: "Энергетика"
+                    company_name: "OOO Novatest",
+                    company_description: "NOVA / TEST  – это топовое российское digital-агентство из региона. На рынке с 2010г. Штат 50 человек. Занимается веб-разработкой и поддержкой сложных digital-решений, высоко нагруженных сервисов, графическим и техническим дизайном + UX/UI, тестированием, контентным наполнением, переводами.",
+                    company_url: "www.nova-test.ru",
+                    company_direction: "Информационные технологии, системная интеграция, интернет"
                 },
                 
             }
@@ -137,10 +137,10 @@
                         email: this.signin.email,
                         password: this.signin.password,
                         mode: this.signin.signin_mode
-                    })
-                   console.log(response);
-                    this.$router.push("/profile");
+                    });
                     if(!response.ok) throw new Error(response.statusText);
+                    this.$store.commit("set_role", this.signin.signin_mode);
+                    this.$router.push("/profile");
                 } catch(err) {
                     console.log(err);
                 }
@@ -167,7 +167,8 @@
                 if(password !== repeat_password) throw new AlertError("Пароли не совпадают!");
                 if(!email.includes("@")) throw new AlertError ("Неправильный формат email!");
                 const response = await json_fetch('http://localhost:3000/signup', {
-                    signup_type: "student", surname, name, patronymic, email, password, faculty, profession, gradebook_number     
+                    signup_type: "student", surname, name, patronymic, email, password, 
+                    faculty, profession, gradebook_number, status: "нерассмотрен"    
                 });
                 if(!response.ok) throw new AlertError(response.statusText); 
                 this.auth_modal_text = `Ваша заявка отправлена на рассмотрение администратору. 
@@ -270,6 +271,10 @@
                         transform: translateY(-13px); 
                     }
                 }
+            }
+            textarea {
+                font-size: 12px;
+                padding-bottom: 5px;
             }
             .user { 
                 background: url(/dist/img/person-icon.svg) no-repeat; 

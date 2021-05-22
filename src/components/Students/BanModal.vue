@@ -1,41 +1,53 @@
 <template>
-    <div v-if="show" class="modal-shadow" @click.self="closeModal">
+     <div v-if="show" class="modal-shadow">
         <div class="modal">
-            <slot name="title">
-                <h2 class="modal-title">
-                    <slot name="modal_title">  </slot>    
-                </h2>
-                <h4>
-                    <slot name="additional"> </slot>
-                </h4>
-            </slot>
             <slot name="body">
                 <div class="modal-content">
-                    <slot name="modal_content"> </slot>
+                    <label>Укажите причину отклонения</label><br>
+                    <textarea v-model="reason" type="text" placeholder="Причина отклонения"></textarea>
                 </div>
             </slot>
             <slot name="footer">
                 <div class="modal-footer">
-                    <button class="modal-footer__button" @click="closeModal">
-                        Ок
+                    <button class="modal-footer__button" @click="close_modal">
+                        Отмена
+                    </button>
+                    <button class="modal-footer__button" @click="ban_student">
+                        Отправить
                     </button>
                 </div>
             </slot>
         </div>
     </div>
 </template>
- 
+
 <script>
+    import json_fetch from '../../lib/json_fetch';
+
     export default {
         name: "ModalWindow",
+        props: ['email', 'student_id'],
         data: function () {
             return {
-                show: true
+                show: true,
+                reason: ''
             }
         },
         methods: {
-            closeModal: function () {
+            close_modal() {
                 this.show = false
+            },
+            async ban_student() {
+                try {
+                    const { student_id, email, reason} = this;
+                    const response = await json_fetch('http://localhost:3000/banstudent', {
+                        status: "отклонен", _id: student_id, email, reason         
+                    }) 
+                    if(!response.ok) throw new AlertError(response.statusText);
+                } catch (err) {
+                    if(err.name === "AlertError") return alert(err.message);
+                    console.log(err);
+                }
             }
         }
     }
@@ -61,6 +73,16 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
+
+        .modal-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 10px;
+            label, textarea { 
+                font-family: 'Raleway', sans-serif;
+            }
+        }
  
         &-close {
             position: absolute;
@@ -93,7 +115,7 @@
             display: flex;
             justify-content: center;
             &__button {
-                background-color: #0971c7;
+                background-color: #0C3B7A;
                 color: #fff;
                 border: none;
                 text-align: center;
@@ -103,6 +125,8 @@
                 border-radius: 8px;
                 min-width: 150px;
                 cursor: pointer;
+                margin-right: 10px;
+                font-family: 'Montserrat', sans-serif;
             }
         }
     }

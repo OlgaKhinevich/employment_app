@@ -2,7 +2,6 @@
   <div class="search-container">
     <div class="search-header">
       <h1>Поиск</h1>
-      <button>Предложить вакансию</button>
     </div>
     <div class="search-filter">
       <h4>Фильтр</h4>
@@ -49,6 +48,8 @@
               <option>Вахтовый метод</option>
             </select><br>
             <label>Должность </label><input v-model="position" type="text" /><br>
+            <label>Навыки </label>
+            <multiselect class="multiselect" v-model="professional_skills" tag-placeholder="Add this as new tag" placeholder="Search or add a tag" label="name" track-by="code" :options="options" :multiple="true" :taggable="true" @tag="addTag"></multiselect>
         </div>
         <div class="right-column">
             <label>Тип занятости </label>
@@ -73,38 +74,81 @@
       </div>
     </div>
     <div class="search-results-container">
-      <SearchResult />
+      <div class="search-result" v-for="(item, index) in search_result" :key="index" :data-index="index">
+        <div class="search-result-header">
+            <h3>{{item.position}}</h3>
+            <h4>от {{item.min_salary}} руб.</h4>
+        </div>
+        <div class="search-result-more">Подробнее >></div> 
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import SearchResult from './SearchResult.vue';
+import AlertError from '../../../lib/alert_error';
+import json_fetch from '../../lib/json_fetch';
+import Multiselect from 'vue-multiselect';
+
 export default {
   data() {
     return {
-        position: "",
-        min_salary: 0,
-        max_salary: 0,
-        professional_field: "",
-        employment_type: "",
-        work_schedule: "",
-        city: "",
-        professional_skills: "",
+        position: '',
+        min_salary: '',
+        max_salary: '',
+        professional_field: '',
+        employment_type: '',
+        work_schedule: '',
+        city: '',
+        professional_skills: [{ name: 'Vue.js' }],
+        options: [
+          { name: 'Vue.js'},
+          { name: 'Javascript'},
+          { name: 'CSS'}
+        ],
+        search_result: []
     }       
   },
   components: {
-    SearchResult
+    multiselect: Multiselect
   },
   methods: {
-    search_vacancy() {
-      const {position, min_salary, max_salary, professional_field, employment_type, work_schedule, city} = this;
-      const response = await fetch('http://localhost:3000/search', {
-        position, min_salary, max_salary, professional_field, employment_type, work_schedule, 
-        city        
-      }) 
-      if(!response.ok) throw new AlertError(response.statusText);  
+    addTag (newTag) {
+      const tag = {
+        name: newTag,
+        code: newTag.substring(0, 2) + Math.floor((Math.random() * 10000000))
+      }
+      this.options.push(tag)
+      this.professional_skills.push(tag)
     },
+    async search_vacancy() {
+      try {
+        const {position, min_salary, max_salary, professional_field, employment_type, work_schedule, city, professional_skills} = this;
+        const response = await json_fetch('http://localhost:3000/search', {
+          position, min_salary, max_salary, professional_field, employment_type, work_schedule, 
+          city, professional_skills       
+        })
+        const data = await response.json();
+        this.search_result = data;
+        console.log(this.search_result);
+        if(!response.ok) throw new AlertError(response.statusText); 
+      } catch(err) {
+        console.log(err);
+      } 
+    },
+    clear_filters() {
+      this.position = '';
+      this.min_salary = '';
+      this.max_salary ='';
+      this.professional_field = '';
+      this.employment_type = '';
+      this.work_schedule = '';
+      this.city = '';
+      this.professional_skills = '';
+    },
+    open_add_vacancy() {
+      this.$router.push("/addvacancy");
+    }
   }
 }
 </script>
@@ -162,12 +206,22 @@ export default {
           display: inline-block;
           width: 170px;
         }
-        textarea, input, select {   
+        .multiselect {
+          height: 30px;
+          border: 1px solid #425359;
+          border-radius: 5px;
+          .multiselect__tags-wrap {
+            .multiselect__tag {
+                background: #224C84 !important;     
+            }
+          }
+        }
+        textarea, input, select{   
           outline: none;
-          background-color: #F1F2F2;
           border: 1px solid #425359;
           border-radius: 5px;
           padding-left: 7px;
+          font-family: 'Raleway', sans-serif;
           &:focus {
             border-radius: 5px;
             background-color: #FFFFFF;
@@ -194,6 +248,7 @@ export default {
           font-size: 14px;
           font-family: 'Raleway', sans-serif;
           transition: 0.5s;
+          background-color: #FFFFFF;
         }
         .search-btn, .clear-btn {
           width: 100px;
@@ -211,6 +266,36 @@ export default {
     }
     .search-results-container {
       margin: 0 5%;
+      .search-result {
+        margin: 15px 0;
+        background-color: #ffffff;
+        padding: 20px 40px;
+        .search-result-header {
+           display: flex;
+           flex-direction: row;
+           justify-content: space-between;
+           h3 {
+                font-family: 'Montserrat', sans-serif;
+                color: #224C84;
+                margin: 0 0 10px 0;
+                font-weight: 700;
+                font-size: 22px;
+           }
+           h4 {
+               font-family: 'Raleway', sans-serif;
+               color: #224C84;
+               font-size: 20px;
+           } 
+        }
+        p {
+            font-family: 'Raleway', sans-serif;
+        }
+        .search-result-more {
+            font-family: 'Raleway', sans-serif;
+            font-weight: 700;
+            margin-top: 15px;
+        }
+      }
     }
   }
 </style>

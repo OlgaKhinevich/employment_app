@@ -16,13 +16,13 @@ import Menu from "./Menu/Menu.vue";
 import Search from "./Search/Search.vue";
 import Notifications from "./Notifications/Notifications.vue";
 import Applications from "./Applications/Applications.vue";
-import News from "./News/News.vue";
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import store from "../store.js";
 import AddVacancy from './AddVacancy/AddVacancy.vue';
 import Students from './Students/Students.vue';
 import Vacancy from './Vacancy/Vacancy.vue';
+import MyVacancies from './MyVacancies/MyVacancies.vue';
 
 Vue.use(VueRouter);
 const routes = [
@@ -32,10 +32,11 @@ const routes = [
     {path: '/search', component: Search},
     {path: '/applications', component: Applications},
     {path: '/notifications', component: Notifications},
-    {path: '/news', component: News},
     {path: '/addvacancy', component: AddVacancy},
     {path: '/students', component: Students},
-    {path: '/vacancy', component: Vacancy}
+    {path: '/vacancy', component: Vacancy},
+    {path: '/students', component: Students},
+    {path: '/companyvacancies', component: MyVacancies},
 ]
 const router = new VueRouter({routes});
 
