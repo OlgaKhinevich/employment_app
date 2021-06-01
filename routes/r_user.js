@@ -26,9 +26,7 @@ class R_User {
 
     static async edit_profile(req, res){
         const data = Security.jwtTokenCheck(req.cookies.token);
-        console.log(data);
         req.body["_id"] = data._id;
-        console.log(data);
         await User.edit_profile(req.body);
         res.end();
     }
@@ -38,14 +36,24 @@ class R_User {
         res.send(data);
     }
 
+    static async get_all_employers(req, res){   
+        const data = await User.get_all_employers();
+        res.send(data);
+    }
+
     static async accept_student(req, res){
         const data = User.accept_student(req.body);    
         res.send(data); 
     }
 
     static async ban_student(req, res){
-        User.ban_student(req.body); 
-        res.send(); 
+        const data = User.ban_student(req.body);    
+        res.send(data); 
+    }
+
+    static async get_statistics(req, res){   
+        const data = await User.get_statistics();
+        res.send(data);
     }
 
     static async get_student(req, res) {
@@ -54,6 +62,7 @@ class R_User {
         const data = await User.get_student(req.body); 
         res.send(data);
     }
+
 }
 
 wrap_class(R_User);

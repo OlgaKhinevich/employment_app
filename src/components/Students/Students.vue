@@ -53,6 +53,7 @@ export default {
   },
   mounted() {
     this.get_all_students();
+    this.$store.commit("setVisibility", true);
   },
   methods: {
     async get_all_students() {
@@ -88,7 +89,6 @@ export default {
         this.email = this.students[index].email;
         this.student_id = this.students[index]._id;
         this.is_ban_modal_visible = true;
-        console.log(this.student_id, this.email);
     }
   } 
     
@@ -134,6 +134,7 @@ export default {
           border-radius: 5px;
           color: #ffffff;
           font-weight: 600;
+          margin: 5px 0;
         }
         i { color: #224C84; }
       }

@@ -6,18 +6,18 @@
                 <li class="profile" @click="make_active('profile')">Личный профиль</li>
                 <li class="applications" @click="make_active('applications')">Заявки</li>
                 <li class="search" @click="make_active('search')">Поиск</li>
-                <li class="notifications" @click="make_active('notifications')">Уведомления</li>
             </template>
         
             <template v-if="user_role == 'admin'"> 
                 <li class="students" @click="make_active('students')">Студенты</li>
                 <li class="vacancies" @click="make_active('vacancies')">Вакансии</li>
+                <li class="employers" @click="make_active('employers')">Работодатели</li>
                 <li class="statistics" @click="make_active('statistics')">Статистика</li>
             </template>
 
             <template v-if="user_role == 'employer'">
-                <li class="employer_vacancies" @click="make_active('employer_vacancies')">Мои вакансии</li>
-                <li class="employer_applications" @click="make_active('employer_applications')">Заявки</li>      
+                <li class="companyvacancies" @click="make_active('companyvacancies')">Мои вакансии</li>
+                <li class="companyapplications" @click="make_active('companyapplications')">Заявки</li>      
             </template>
       </ul>
   </div>
@@ -66,9 +66,9 @@ export default {
                 }*/ 
             }
             &.profile li.profile, &.applications li.applications,
-            &.search li.search, &.notifications li.notifications, &.students li.students,
-            &.statistics li.statistics, &.vacancies li.vacancies, &.employer_vacancies li.employer_vacancies,
-            &.employer_applications li.employer_applications {
+            &.search li.search, &.students li.students,
+            &.statistics li.statistics, &.vacancies li.vacancies, &.companyvacancies li.companyvacancies,
+            &.companyapplications li.companyapplications, &.employers li.employers {
                 background-color: #0C3B7A;
             }
         }  

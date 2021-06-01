@@ -7,7 +7,8 @@ const store = new Vuex.Store({
   state: {
     isMenuVisible: true,
     isActiveMenuItem: 'profile',
-    role: ''
+    role: '',
+    vacancy: []
   },
   mutations: {
     setVisibility(state, visibility){
@@ -15,6 +16,9 @@ const store = new Vuex.Store({
     },
     set_role(state, user_role) {
       state.role = user_role;
+    },
+    set_vacancy(state, user_vacancy) {
+      state.vacancy = user_vacancy;
     }
   }
 

@@ -17,7 +17,25 @@ class R_Vacancy {
     static async get_company_vacancies(req, res) {
         const {_id} = Security.jwtTokenCheck(req.cookies.token);
         req.body["_id"] = _id;
-        const data = Vacancy.get_company_vacancies(req.body); 
+        const data = await Vacancy.get_company_vacancies(req.body);
+        res.send(data);
+    }
+
+    static async delete_vacancy(req, res) {
+        const data = await Vacancy.delete_vacancy(req.body);
+        console.log(data);
+        res.send(data);
+    }
+
+    static async get_all_vacancies(req, res) {
+        const data = await Vacancy.get_all_vacancies(req.body);
+        console.log(data);
+        res.send(data);
+    }
+
+    static async get_company(req, res) {
+        const data = await Vacancy.get_company(req.body);
+        console.log(data);
         res.send(data);
     }
 }

@@ -74,12 +74,12 @@
       </div>
     </div>
     <div class="search-results-container">
-      <div class="search-result" v-for="(item, index) in search_result" :key="index" :data-index="index">
+      <div class="search-result" v-for="(item, index) in vacancies" :key="index" :data-index="index">
         <div class="search-result-header">
             <h3>{{item.position}}</h3>
             <h4>от {{item.min_salary}} руб.</h4>
         </div>
-        <div class="search-result-more">Подробнее >></div> 
+        <div class="search-result-more" @click="open_vacancy_page">Подробнее >></div> 
       </div>
     </div>
   </div>
@@ -89,6 +89,7 @@
 import AlertError from '../../../lib/alert_error';
 import json_fetch from '../../lib/json_fetch';
 import Multiselect from 'vue-multiselect';
+import Vacancy from '../Vacancy/Vacancy.vue';
 
 export default {
   data() {
@@ -106,11 +107,15 @@ export default {
           { name: 'Javascript'},
           { name: 'CSS'}
         ],
-        search_result: []
+        search_result: [],
+        vacancies: []
     }       
   },
   components: {
     multiselect: Multiselect
+  },
+  mounted() {
+    this.get_all_vacancies();
   },
   methods: {
     addTag (newTag) {
@@ -129,8 +134,7 @@ export default {
           city, professional_skills       
         })
         const data = await response.json();
-        this.search_result = data;
-        console.log(this.search_result);
+        this.vacancies = data;
         if(!response.ok) throw new AlertError(response.statusText); 
       } catch(err) {
         console.log(err);
@@ -145,6 +149,23 @@ export default {
       this.work_schedule = '';
       this.city = '';
       this.professional_skills = '';
+    },
+    async get_all_vacancies() {
+      try {
+        const response = await json_fetch(`http://localhost:3000/getallvacancies`);
+        if(!response.ok) throw new AlertError(response.statusText);
+        const data = await response.json();
+        this.vacancies = data;
+      } catch (err) {
+        if(err.name === "AlertError") return alert(err.message);
+        console.log(err);
+      }
+    },
+    open_vacancy_page({target}) {
+      const index = target.closest(".search-result").dataset.index;
+      const vacancy = this.vacancies[index];
+      this.$store.commit("set_vacancy", vacancy);
+      this.$router.push("/vacancy");
     },
     open_add_vacancy() {
       this.$router.push("/addvacancy");

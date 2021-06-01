@@ -1,5 +1,6 @@
 const M_Student = require("../models/student");
 const M_Employer = require("../models/employer");
+const M_User = require("../models/user");
 const AlertError = require("../lib/alert_error");
 const nodemailer = require("nodemailer");
 
@@ -38,12 +39,13 @@ class User{
          company_name,
          company_description,
          company_direction,
-         company_url      
+         website: company_url     
       })).save();  
    }
 
    static async signin(data={}){
       const {email, password, mode} = data;
+      console.log(mode);
       if (!email || !password) throw new Error("Wrong params!");
       let user;
       switch(mode){
@@ -52,6 +54,9 @@ class User{
             break;
          case "student":
             [user] = await M_Student.find({email});
+            break;
+         case "admin":
+            [user] = await M_User.find({password});
             break;
          default: throw new Error("Wrong signin mode!");
       }
@@ -75,6 +80,10 @@ class User{
 
    static async get_all_students() {
       return await M_Student.find({});
+   }
+
+   static async get_all_employers() {
+      return await M_Employer.find({});
    }
 
    static async accept_student(data={}){
@@ -128,6 +137,14 @@ class User{
 
    static async get_student({_id}) {
       return await M_Student.find({_id});    
+   }
+
+   static async get_statistics() {
+      const all_employers = await M_Employer.find({}).countDocuments();
+      const all_students = await M_Student.find({}).countDocuments();
+      const stat_data = [];
+      stat_data.push(all_employers, all_students);
+      return stat_data;
    }
 
 }

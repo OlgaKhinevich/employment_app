@@ -11,14 +11,14 @@ const vacancy = Schema({
     city: {type: String},
     address: {type: String},
     duties: {type: String, required: true},
-    professional_skills: {type: String, required: true},
+    professional_skills: {type: Array, required: true},
     personal_qualities: {type: String, required: true},
     working_conditions: {type: String, required: true},
     additionally: {type: String},
     phone_number: {type: String},
     email: {type: String},
     company: {type: String},
-    is_closed: {type: Boolean},
+    status: {type: String}
 });
 
 module.exports = mongoose.model("vacancy", vacancy);

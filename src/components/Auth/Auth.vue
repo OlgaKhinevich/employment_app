@@ -140,7 +140,14 @@
                     });
                     if(!response.ok) throw new Error(response.statusText);
                     this.$store.commit("set_role", this.signin.signin_mode);
-                    this.$router.push("/profile");
+                    if(this.signin.signin_mode == "student") {
+                        this.$router.push("/profile");
+                    } if (this.signin.signin_mode == "employer") {
+                       this.$router.push("/companyvacancies"); 
+                    } else {
+                       this.$router.push("/students"); 
+                    }
+                    
                 } catch(err) {
                     console.log(err);
                 }
